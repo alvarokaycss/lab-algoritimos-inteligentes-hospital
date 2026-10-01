@@ -1,4 +1,4 @@
-# Logística Intra-Hospitalar e Roteamento de Emergência (IA)
+# Logística Intra-Hospitalar e Roteamento de Emergência
 
 > Simulação interativa em Canvas 2D Blueprint comparando Busca Gulosa e Algoritmo A* no transporte crítico de pacientes sob normas de biossegurança do SUS (ANVISA RDC 50) e embasamento teórico em Liu (2023).
 
