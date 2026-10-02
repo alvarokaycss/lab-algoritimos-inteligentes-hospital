@@ -1,6 +1,17 @@
+import { useState, useMemo } from 'react';
 import './App.css';
+import CanvasMap from './components/CanvasMap.jsx';
+import { getScenario, SCENARIO_LIST } from './data/scenariosData.js';
 
 export default function App() {
+  const [selectedScenarioId, setSelectedScenarioId] = useState('ubs_porte_1');
+  const [activeAlgorithm, setActiveAlgorithm] = useState('both'); // 'both' | 'astar' | 'greedy'
+
+  // Instancia o cenário selecionado
+  const currentScenario = useMemo(() => {
+    return getScenario(selectedScenarioId);
+  }, [selectedScenarioId]);
+
   return (
     <div className="app-layout">
       {/* ── Header 42px ── */}
@@ -10,7 +21,30 @@ export default function App() {
           Logística Intra-Hospitalar IA
         </div>
         <div className="app-header__controls">
-          {/* Futuro: ScenarioSelector (Task 8) */}
+          {/* Seletor dos 3 Cenários SUS (Task 6.3 & base da Task 8) */}
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            {SCENARIO_LIST.map((sc) => (
+              <button
+                key={sc.id}
+                onClick={() => setSelectedScenarioId(sc.id)}
+                className="dock-player__btn"
+                style={{
+                  height: '28px',
+                  padding: '0 10px',
+                  fontSize: '11px',
+                  fontWeight: selectedScenarioId === sc.id ? '600' : '400',
+                  backgroundColor: selectedScenarioId === sc.id ? 'var(--color-blueprint)' : 'var(--color-surface)',
+                  color: selectedScenarioId === sc.id ? '#ffffff' : 'var(--color-text-secondary)',
+                  border: `1px solid ${selectedScenarioId === sc.id ? 'var(--color-cyan)' : 'var(--color-border)'}`,
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {sc.name}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
@@ -22,16 +56,12 @@ export default function App() {
 
         {/* Container do mapa Blueprint */}
         <main className="map-container">
-          {/* Frame da cianotipia — fundo #00233d (Passo 2.3) */}
+          {/* Frame da cianotipia — fundo #00233d (Passo 2.3 & Task 6) */}
           <div className="blueprint-frame">
-            {/* Canvas 2D inserido aqui pela Task 6: CanvasMap.jsx */}
-          </div>
-
-          {/* Overlay enquanto nenhum cenário está carregado */}
-          <div className="map-overlay">
-            <span className="app-header__logo-dot shadow-glow" />
-            <p className="map-overlay__title">Logística Hospitalar</p>
-            <p className="map-overlay__subtitle">Selecione um cenário SUS para iniciar</p>
+            <CanvasMap
+              scenario={currentScenario}
+              activeAlgorithm={activeAlgorithm}
+            />
           </div>
 
           {/* Botão flutuante de configurações 40×40px (Passo 8.1) */}
