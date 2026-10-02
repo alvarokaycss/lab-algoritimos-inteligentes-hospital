@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { renderHospitalBlueprint } from '../utils/canvasDrawing.js';
 
+// Limites e constantes de navegação 
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 2.5;
+const DEFAULT_ZOOM = 1.0;
+const BASE_CELL_SIZE = 36;
+
 /**
- * Componente CanvasMap - Renderizador 2D Blueprint da Planta Baixa Hospitalar.
- * 
- * Task 6 (Passos 6.1, 6.2, 6.3)
- * Responsável: Desenvolvedor 2
- * 
- * Renderiza a 60 FPS com fundo `#00233d`, malha quadriculada técnica com offset de 2500px,
- * salas com efeito de giz de prancheta, hachuras a 45° (Isolamento RDC 50 e Congestionamento),
- * nós explorados e traçados de rotas (A* em ciano elétrico e Gulosa em amarelo nanquim).
+ * Componente CanvasMap - Renderizador 2D Blueprint com Sistema de Navegação Interativo.
+ * Características:
+ * - Zoom contínuo (0.5x a 2.5x) via roda do mouse (Wheel) centrado no cursor
+ * - Pan por arraste contínuo (Click & Drag) com cursor grab / grabbing
+ * - Transformações matriciais centralizadas em Canvas 2D (save/translate/scale/restore)
+ * - Suporte a controle externo (Zoom Dock) ou gerenciamento autônomo
+ * - Renderização contínua a 60 FPS com cancelamento automático de frames
  */
 export default function CanvasMap({
   scenario,
@@ -17,8 +22,8 @@ export default function CanvasMap({
   exploredAlgorithm = 'astar',
   routes = {},
   activeAlgorithm = 'both',
-  zoom: externalZoom,
-  pan: externalPan,
+  zoom: controlledZoom,
+  pan: controlledPan,
   onZoomChange,
   onPanChange,
   onCellClick
@@ -26,17 +31,43 @@ export default function CanvasMap({
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Estados locais de Zoom e Pan caso não sejam fornecidos externamente (preparando Task 7)
-  const [internalZoom, setInternalZoom] = useState(1.0);
+  // Passo 7.1: Estruturar estados locais de Zoom (0.5 a 2.5) e Pan ({ x, y })
+  const [internalZoom, setInternalZoom] = useState(DEFAULT_ZOOM);
   const [internalPan, setInternalPan] = useState({ x: 0, y: 0 });
 
-  const currentZoom = externalZoom !== undefined ? externalZoom : internalZoom;
-  const currentPan = externalPan !== undefined ? externalPan : internalPan;
+  const zoom = controlledZoom !== undefined ? controlledZoom : internalZoom;
+  const pan = controlledPan !== undefined ? controlledPan : internalPan;
 
-  // Tamanho base de cada célula da grade na escala 1:1
-  const baseCellSize = 36;
+  // Estado de controle do arraste (Pan) e cursor
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+  const panStartRef = useRef({ x: 0, y: 0 });
 
-  // Função pura de desenho do frame
+  // Notifica mudanças para componentes pais (ex: ZoomDock)
+  const updateZoom = useCallback((newZoomOrFn) => {
+    if (typeof newZoomOrFn === 'function') {
+      const computed = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, newZoomOrFn(zoom)));
+      if (onZoomChange) onZoomChange(computed);
+      else setInternalZoom(computed);
+    } else {
+      const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, newZoomOrFn));
+      if (onZoomChange) onZoomChange(clamped);
+      else setInternalZoom(clamped);
+    }
+  }, [zoom, onZoomChange]);
+
+  const updatePan = useCallback((newPanOrFn) => {
+    if (typeof newPanOrFn === 'function') {
+      const computed = newPanOrFn(pan);
+      if (onPanChange) onPanChange(computed);
+      else setInternalPan(computed);
+    } else {
+      if (onPanChange) onPanChange(newPanOrFn);
+      else setInternalPan(newPanOrFn);
+    }
+  }, [pan, onPanChange]);
+
+  // Passo 7.2: Transformações matemáticas centralizadas no contexto do Canvas 2D
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !scenario) return;
@@ -48,36 +79,37 @@ export default function CanvasMap({
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
+    // Ajusta resolução do canvas com base no devicePixelRatio para manter alta nitidez
     if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
       canvas.width = width * dpr;
       canvas.height = height * dpr;
     }
 
     ctx.save();
-    // Normaliza escala de pixels de alta densidade (Retina/High-DPI)
     ctx.scale(dpr, dpr);
 
-    // Limpa a tela com o fundo clássico de cianotipia arquitetônica
+    // Fundo base de cianotipia arquitetônica (#00233d)
     ctx.fillStyle = '#00233d';
     ctx.fillRect(0, 0, width, height);
 
-    // Calcula centralização inicial da planta na tela
+    // Dimensões do mapa em pixels
     const cols = scenario.grid ? scenario.grid.colunas : (scenario.cols || 24);
     const rows = scenario.grid ? scenario.grid.linhas : (scenario.rows || 16);
-    const mapPixelWidth = cols * baseCellSize;
-    const mapPixelHeight = rows * baseCellSize;
+    const mapPixelWidth = cols * BASE_CELL_SIZE;
+    const mapPixelHeight = rows * BASE_CELL_SIZE;
 
-    const defaultOffsetX = (width - mapPixelWidth * currentZoom) / 2;
-    const defaultOffsetY = (height - mapPixelHeight * currentZoom) / 2;
+    // Posição central padrão do mapa na viewport
+    const defaultOffsetX = (width - mapPixelWidth * zoom) / 2;
+    const defaultOffsetY = (height - mapPixelHeight * zoom) / 2;
 
-    // Aplica matriz de transformação 2D (Pan & Zoom centralizados)
+    // Passo 7.2: Transformações aplicadas no contexto (ctx.save, translate, scale, ctx.restore)
     ctx.save();
-    ctx.translate(defaultOffsetX + currentPan.x, defaultOffsetY + currentPan.y);
-    ctx.scale(currentZoom, currentZoom);
+    ctx.translate(defaultOffsetX + pan.x, defaultOffsetY + pan.y);
+    ctx.scale(zoom, zoom);
 
-    // Renderiza a planta baixa através do utilitário técnico
+    // Renderiza todas as camadas blueprint (malha expandida 2500px, salas, zonas, rotas)
     renderHospitalBlueprint(ctx, scenario, {
-      cellSize: baseCellSize,
+      cellSize: BASE_CELL_SIZE,
       exploredNodes,
       exploredAlgorithm,
       routes,
@@ -86,15 +118,15 @@ export default function CanvasMap({
 
     ctx.restore();
     ctx.restore();
-  }, [scenario, exploredNodes, exploredAlgorithm, routes, activeAlgorithm, currentZoom, currentPan]);
+  }, [scenario, exploredNodes, exploredAlgorithm, routes, activeAlgorithm, zoom, pan]);
 
-  // Redesenha com requestAnimationFrame para garantir fluidez a 60 FPS
+  // Laço de renderização a 60 FPS
   useEffect(() => {
     let animId = requestAnimationFrame(drawFrame);
     return () => cancelAnimationFrame(animId);
   }, [drawFrame]);
 
-  // ResizeObserver para manter o Canvas responsivo ao layout flex/push
+  // ResizeObserver para manter fluidez durante redimensionamentos de tela
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -107,8 +139,104 @@ export default function CanvasMap({
     return () => resizeObserver.disconnect();
   }, [drawFrame]);
 
-  // Click no canvas para interação futura de inspeção ou waypoints
+  // Passo 7.3: Evento Wheel para Zoom Contínuo e Centrado no Cursor do Mouse
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleWheel = (e) => {
+      e.preventDefault(); // Evita scroll vertical da página
+
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      // Fator de escala suave (exponencial para resposta natural)
+      const zoomFactor = e.deltaY < 0 ? 1.12 : 0.89;
+      const targetZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * zoomFactor));
+
+      if (Math.abs(targetZoom - zoom) < 0.001) return;
+
+      const cols = scenario?.grid ? scenario.grid.colunas : (scenario?.cols || 24);
+      const rows = scenario?.grid ? scenario.grid.linhas : (scenario?.rows || 16);
+      const mapPixelWidth = cols * BASE_CELL_SIZE;
+      const mapPixelHeight = rows * BASE_CELL_SIZE;
+
+      // Posição central anterior
+      const oldDefaultOffsetX = (canvas.clientWidth - mapPixelWidth * zoom) / 2;
+      const oldDefaultOffsetY = (canvas.clientHeight - mapPixelHeight * zoom) / 2;
+
+      // Posição no espaço do mundo (planta) antes do zoom
+      const worldX = (mouseX - oldDefaultOffsetX - pan.x) / zoom;
+      const worldY = (mouseY - oldDefaultOffsetY - pan.y) / zoom;
+
+      // Nova posição central com o novo zoom
+      const newDefaultOffsetX = (canvas.clientWidth - mapPixelWidth * targetZoom) / 2;
+      const newDefaultOffsetY = (canvas.clientHeight - mapPixelHeight * targetZoom) / 2;
+
+      // Ajusta o pan para que o ponto sob o cursor permaneça exatamente na mesma posição
+      const newPanX = mouseX - newDefaultOffsetX - worldX * targetZoom;
+      const newPanY = mouseY - newDefaultOffsetY - worldY * targetZoom;
+
+      updateZoom(targetZoom);
+      updatePan({ x: newPanX, y: newPanY });
+    };
+
+    // Necessário { passive: false } para e.preventDefault() funcionar no wheel
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
+    return () => canvas.removeEventListener('wheel', handleWheel);
+  }, [zoom, pan, scenario, updateZoom, updatePan]);
+
+  // Passo 7.3: Eventos MouseDown / MouseMove / MouseUp para Pan por Arraste
+  const handleMouseDown = (e) => {
+    // Permite Pan apenas com o botão primário do mouse (esquerdo)
+    if (e.button !== 0) return;
+
+    setIsDragging(true);
+    dragStartRef.current = { x: e.clientX, y: e.clientY };
+    panStartRef.current = { x: pan.x, y: pan.y };
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+
+      const dx = e.clientX - dragStartRef.current.x;
+      const dy = e.clientY - dragStartRef.current.y;
+
+      updatePan({
+        x: panStartRef.current.x + dx,
+        y: panStartRef.current.y + dy
+      });
+    };
+
+    const handleMouseUp = () => {
+      if (isDragging) {
+        setIsDragging(false);
+      }
+    };
+
+    if (isDragging) {
+      // Registra no window para garantir continuidade mesmo se o cursor sair do canvas
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, updatePan]);
+
+  // Clique em células do mapa para futuras inspeções ou definição de pontos
   const handleCanvasClick = (e) => {
+    // Se estava arrastando significativamente, não dispara clique de célula
+    const dist = Math.hypot(
+      e.clientX - dragStartRef.current.x,
+      e.clientY - dragStartRef.current.y
+    );
+    if (dist > 5) return;
+
     if (!onCellClick || !scenario) return;
 
     const canvas = canvasRef.current;
@@ -120,17 +248,17 @@ export default function CanvasMap({
 
     const cols = scenario.grid ? scenario.grid.colunas : (scenario.cols || 24);
     const rows = scenario.grid ? scenario.grid.linhas : (scenario.rows || 16);
-    const mapPixelWidth = cols * baseCellSize;
-    const mapPixelHeight = rows * baseCellSize;
+    const mapPixelWidth = cols * BASE_CELL_SIZE;
+    const mapPixelHeight = rows * BASE_CELL_SIZE;
 
-    const defaultOffsetX = (canvas.clientWidth - mapPixelWidth * currentZoom) / 2;
-    const defaultOffsetY = (canvas.clientHeight - mapPixelHeight * currentZoom) / 2;
+    const defaultOffsetX = (canvas.clientWidth - mapPixelWidth * zoom) / 2;
+    const defaultOffsetY = (canvas.clientHeight - mapPixelHeight * zoom) / 2;
 
-    const transformedX = (mouseX - defaultOffsetX - currentPan.x) / currentZoom;
-    const transformedY = (mouseY - defaultOffsetY - currentPan.y) / currentZoom;
+    const transformedX = (mouseX - defaultOffsetX - pan.x) / zoom;
+    const transformedY = (mouseY - defaultOffsetY - pan.y) / zoom;
 
-    const cellX = Math.floor(transformedX / baseCellSize);
-    const cellY = Math.floor(transformedY / baseCellSize);
+    const cellX = Math.floor(transformedX / BASE_CELL_SIZE);
+    const cellY = Math.floor(transformedY / BASE_CELL_SIZE);
 
     if (cellX >= 0 && cellX < cols && cellY >= 0 && cellY < rows) {
       onCellClick(cellX, cellY);
@@ -145,17 +273,21 @@ export default function CanvasMap({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: '#00233d'
+        backgroundColor: '#00233d',
+        userSelect: 'none'
       }}
     >
       <canvas
         ref={canvasRef}
+        onMouseDown={handleMouseDown}
         onClick={handleCanvasClick}
         style={{
           display: 'block',
           width: '100%',
           height: '100%',
-          cursor: 'default'
+          // Passo 7.3: Cursor grab em repouso e grabbing durante o arraste
+          cursor: isDragging ? 'grabbing' : 'grab',
+          touchAction: 'none'
         }}
       />
     </div>

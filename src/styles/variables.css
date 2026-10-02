@@ -1,129 +1,137 @@
 /* =============================================================
    variables.css — Variáveis CSS globais
-   Projeto: Logística Intra-Hospitalar IA
-   Dev 2: Gabriel
-   Extraídas do protótipo validado (30/09/2026)
    ============================================================= */
 
 :root {
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      PALETA — Cianotipia / Blueprint Arquitetônico
      ------------------------------------------------------------------ */
-  /* Cor de fundo principal do canvas Blueprint */
-  --color-blueprint:    #00233d;
-  --color-blueprint-90: rgba(0, 35, 61, 0.90);
-  --color-blueprint-60: rgba(0, 35, 61, 0.60);
+   /* Cor de fundo principal do canvas Blueprint */
+   --color-blueprint: #00233d;
+   --color-blueprint-90: rgba(0, 35, 61, 0.90);
+   --color-blueprint-60: rgba(0, 35, 61, 0.60);
 
-  /* Linhas e acentos de grade (ciano sobre Blueprint) */
-  --color-cyan:         #38bdf8;
-  --color-cyan-50:      rgba(56, 189, 248, 0.50);
-  --color-cyan-20:      rgba(56, 189, 248, 0.20);
+   /* Linhas e acentos de grade (ciano sobre Blueprint) */
+   --color-cyan: #38bdf8;
+   --color-cyan-50: rgba(56, 189, 248, 0.50);
+   --color-cyan-20: rgba(56, 189, 248, 0.20);
 
-  /* Status: rota encontrada / corredor livre */
-  --color-emerald:      #059669;
-  --color-emerald-70:   rgba(5, 150, 105, 0.70);
+   /* Status: rota encontrada / corredor livre */
+   --color-emerald: #059669;
+   --color-emerald-70: rgba(5, 150, 105, 0.70);
 
-  /* Status: alertas / congestionamento */
-  --color-amber:        #f59e0b;
-  --color-amber-70:     rgba(245, 158, 11, 0.70);
+   /* Status: alertas / congestionamento */
+   --color-amber: #f59e0b;
+   --color-amber-70: rgba(245, 158, 11, 0.70);
 
-  /* Status: bloqueio / isolamento */
-  --color-danger:       #ef4444;
-  --color-danger-70:    rgba(239, 68, 68, 0.70);
+   /* Status: bloqueio / isolamento */
+   --color-danger: #ef4444;
+   --color-danger-70: rgba(239, 68, 68, 0.70);
 
-  /* Fundo clínico da página (Passo 2.3) */
-  --color-clinical-bg:  #f8fafc;
+   /* Fundo clínico da página (Passo 2.3) */
+   --color-clinical-bg: #f8fafc;
 
-  /* Superfícies flutuantes (header, gaveta, docks) */
-  --color-surface:      #ffffff;
-  --color-surface-muted:#f1f5f9;
+   /* Superfícies flutuantes (header, gaveta, docks) */
+   --color-surface: #ffffff;
+   --color-surface-muted: #f1f5f9;
 
-  /* Texto */
-  --color-text-primary: #0f172a;
-  --color-text-muted:   #64748b;
-  --color-text-inverse: #e0f2fe;
+   /* Texto */
+   --color-text-primary: #0f172a;
+   --color-text-muted: #64748b;
+   --color-text-inverse: #e0f2fe;
 
-  /* Bordas */
-  --color-border:       #cbd5e1;
-  --color-border-dark:  rgba(56, 189, 248, 0.30);
+   /* Bordas */
+   --color-border: #cbd5e1;
+   --color-border-dark: rgba(56, 189, 248, 0.30);
 
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      DIMENSÕES ESTRUTURAIS — extraídas do protótipo
      ------------------------------------------------------------------ */
-  /* Header / barra superior */
-  --header-height:      42px;
+   /* Header / barra superior */
+   --header-height: 42px;
 
-  /* Docks inferiores (legenda + player) */
-  --dock-height:        42px;
+   /* Docks inferiores (legenda + player) */
+   --dock-height: 42px;
 
-  /* Botão de configuração flutuante */
-  --config-btn-size:    40px;
+   /* Botão de configuração flutuante */
+   --config-btn-size: 40px;
 
-  /* Dock de zoom (largura) */
-  --zoom-dock-width:    36px;
+   /* Dock de zoom (largura) */
+   --zoom-dock-width: 36px;
 
-  /* Gaveta lateral de métricas */
-  --drawer-width:       320px;
+   /* Gaveta lateral de métricas */
+   --drawer-width: 320px;
 
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      TIPOGRAFIA
      ------------------------------------------------------------------ */
-  --font-sans:    'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono:    'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 
-  --text-xs:    0.6875rem;  /* 11px */
-  --text-sm:    0.75rem;    /* 12px */
-  --text-base:  0.875rem;   /* 14px */
-  --text-lg:    1rem;       /* 16px */
-  --text-xl:    1.125rem;   /* 18px */
+   --text-xs: 0.6875rem;
+   /* 11px */
+   --text-sm: 0.75rem;
+   /* 12px */
+   --text-base: 0.875rem;
+   /* 14px */
+   --text-lg: 1rem;
+   /* 16px */
+   --text-xl: 1.125rem;
+   /* 18px */
 
-  --font-regular: 400;
-  --font-medium:  500;
-  --font-semibold:600;
-  --font-bold:    700;
+   --font-regular: 400;
+   --font-medium: 500;
+   --font-semibold: 600;
+   --font-bold: 700;
 
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      ESPAÇAMENTOS
      ------------------------------------------------------------------ */
-  --space-1:  0.25rem;   /*  4px */
-  --space-2:  0.5rem;    /*  8px */
-  --space-3:  0.75rem;   /* 12px */
-  --space-4:  1rem;      /* 16px */
-  --space-6:  1.5rem;    /* 24px */
-  --space-8:  2rem;      /* 32px */
+   --space-1: 0.25rem;
+   /*  4px */
+   --space-2: 0.5rem;
+   /*  8px */
+   --space-3: 0.75rem;
+   /* 12px */
+   --space-4: 1rem;
+   /* 16px */
+   --space-6: 1.5rem;
+   /* 24px */
+   --space-8: 2rem;
+   /* 32px */
 
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      BORDAS / RAIOS
      ------------------------------------------------------------------ */
-  --radius-sm:  4px;
-  --radius-md:  6px;
-  --radius-lg:  10px;
-  --radius-xl:  14px;
-  --radius-full:9999px;
+   --radius-sm: 4px;
+   --radius-md: 6px;
+   --radius-lg: 10px;
+   --radius-xl: 14px;
+   --radius-full: 9999px;
 
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      SOMBRAS
      ------------------------------------------------------------------ */
-  --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-  --shadow-md:  0 4px 12px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.08);
-  --shadow-lg:  0 10px 30px rgba(0,0,0,.14), 0 4px 12px rgba(0,0,0,.10);
-  --shadow-glow:0 0 14px rgba(56, 189, 248, 0.45);
+   --shadow-sm: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+   --shadow-md: 0 4px 12px rgba(0, 0, 0, .10), 0 2px 6px rgba(0, 0, 0, .08);
+   --shadow-lg: 0 10px 30px rgba(0, 0, 0, .14), 0 4px 12px rgba(0, 0, 0, .10);
+   --shadow-glow: 0 0 14px rgba(56, 189, 248, 0.45);
 
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      TRANSIÇÕES / ANIMAÇÕES
      ------------------------------------------------------------------ */
-  --transition-fast:    80ms ease;
-  --transition-default: 160ms ease;
-  --transition-slow:    320ms ease;
+   --transition-fast: 80ms ease;
+   --transition-default: 160ms ease;
+   --transition-slow: 320ms ease;
 
-  /* ------------------------------------------------------------------
+   /* ------------------------------------------------------------------
      Z-INDEX (camadas)
      ------------------------------------------------------------------ */
-  --z-canvas:   0;
-  --z-overlay:  10;
-  --z-dock:     20;
-  --z-drawer:   30;
-  --z-header:   40;
-  --z-modal:    50;
-  --z-tooltip:  60;
+   --z-canvas: 0;
+   --z-overlay: 10;
+   --z-dock: 20;
+   --z-drawer: 30;
+   --z-header: 40;
+   --z-modal: 50;
+   --z-tooltip: 60;
 }
