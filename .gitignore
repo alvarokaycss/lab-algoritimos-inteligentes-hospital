@@ -24,3 +24,7 @@ Thumbs.db
 # Any other files or directories you want to ignore
 
 ./AGENTS.md
+
+# Documentos internos de planejamento (não subir no repositório)
+Plano de Implementacao e Tasks - Logistica Hospitalar IA.md
+Especificacao e Divisao do Projeto - Logistica Hospitalar IA.md

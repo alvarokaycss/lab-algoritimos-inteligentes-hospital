@@ -1,0 +1,358 @@
+/* =============================================================
+   App.css — Moldura principal e layout de tela cheia
+   Projeto: Logística Intra-Hospitalar IA
+   Dev 2: Gabriel
+
+   Passo 2.2: .app-layout, .map-container, .blueprint-frame
+   Passo 2.3: fundo clínico #f8fafc + frame central = protótipo
+   ============================================================= */
+
+/* ------------------------------------------------------------
+   APP-LAYOUT — Wrapper raiz de tela cheia
+   Estrutura: header | [drawer | map | zoom-dock] | bottom-docks
+   ------------------------------------------------------------ */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-clinical-bg); /* #f8fafc */
+  overflow: hidden;
+  position: relative;
+}
+
+/* ------------------------------------------------------------
+   HEADER FLUTUANTE — 42px de altura (--header-height)
+   ------------------------------------------------------------ */
+.app-header {
+  position: relative;
+  z-index: var(--z-header);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 var(--space-3);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.app-header__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.app-header__logo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-cyan);
+}
+
+.app-header__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ------------------------------------------------------------
+   AREA DE TRABALHO — Ocupa todo o espaço restante
+   Entre o header e os docks inferiores
+   ------------------------------------------------------------ */
+.app-workspace {
+  display: flex;
+  flex: 1 1 0%;
+  min-height: 0; /* Necessário para flex-children com overflow */
+  position: relative;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------
+   GAVETA LATERAL DE MÉTRICAS — retrátil (push layout)
+   ------------------------------------------------------------ */
+.app-drawer {
+  position: relative;
+  z-index: var(--z-drawer);
+  width: var(--drawer-width);
+  height: 100%;
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  transform: translateX(0);
+  transition: transform var(--transition-slow), width var(--transition-slow);
+}
+
+.app-drawer--collapsed {
+  width: 0;
+  border-right: none;
+}
+
+/* ------------------------------------------------------------
+   MAP-CONTAINER — Área central que envolve o canvas
+   Fundo clínico + centralização do Blueprint
+   ------------------------------------------------------------ */
+.map-container {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-clinical-bg); /* #f8fafc — Passo 2.3 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ------------------------------------------------------------
+   BLUEPRINT-FRAME — Frame central de cianotipia (#00233d)
+   Renderizado pelo Canvas 2D (Dev 2, Task 6)
+   Valida o Passo 2.3: deve renderizar idêntico ao protótipo
+   ------------------------------------------------------------ */
+.blueprint-frame {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-blueprint); /* #00233d */
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Canvas sobrepõe o frame sem margens */
+.blueprint-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ------------------------------------------------------------
+   DOCK DE ZOOM — Vertical, lado direito da área de trabalho
+   ------------------------------------------------------------ */
+.zoom-dock {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-dock);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) 0;
+  box-shadow: var(--shadow-md);
+}
+
+.zoom-dock__btn {
+  width: var(--zoom-dock-width);
+  height: var(--zoom-dock-width);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.zoom-dock__btn:hover {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-primary);
+}
+
+.zoom-dock__btn:active {
+  background-color: var(--color-clinical-bg);
+}
+
+.zoom-dock__divider {
+  width: 20px;
+  height: 1px;
+  background-color: var(--color-border);
+  margin: var(--space-1) 0;
+}
+
+.zoom-dock__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------
+   BOTÃO FLUTUANTE DE CONFIGURAÇÕES — 40x40px
+   Alinhado à esquerda com o zoom-dock (Passo 8.1)
+   ------------------------------------------------------------ */
+.config-btn {
+  position: absolute;
+  left: var(--space-3);
+  bottom: calc(var(--dock-height) + var(--space-3));
+  z-index: var(--z-dock);
+  width: var(--config-btn-size);
+  height: var(--config-btn-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.config-btn:hover {
+  background-color: var(--color-blueprint);
+  color: var(--color-cyan);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Animação de rotação no hover */
+.config-btn:hover svg {
+  transform: rotate(30deg);
+}
+
+.config-btn svg {
+  transition: transform var(--transition-slow);
+}
+
+/* ------------------------------------------------------------
+   DOCKS INFERIORES — Legenda + Player, sem sobreposição
+   ------------------------------------------------------------ */
+.bottom-docks {
+  position: relative;
+  z-index: var(--z-dock);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  height: var(--dock-height);
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -1px 4px rgba(0,0,0,.06);
+  flex-shrink: 0;
+}
+
+/* Dock de legenda técnica (esquerda) */
+.dock-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  flex: 1;
+  overflow: hidden;
+}
+
+.dock-legend__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.dock-legend__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* Separador vertical entre os docks */
+.dock-separator {
+  width: 1px;
+  height: 60%;
+  align-self: center;
+  background-color: var(--color-border);
+  flex-shrink: 0;
+}
+
+/* Dock do player de execução (direita) */
+.dock-player {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  flex-shrink: 0;
+}
+
+.dock-player__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: 28px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast);
+}
+
+.dock-player__btn:hover {
+  background-color: var(--color-blueprint);
+  border-color: var(--color-cyan);
+  color: var(--color-text-inverse);
+}
+
+.dock-player__btn--primary {
+  background-color: var(--color-blueprint);
+  border-color: var(--color-cyan);
+  color: var(--color-text-inverse);
+}
+
+.dock-player__btn--primary:hover {
+  background-color: var(--color-cyan);
+  color: var(--color-blueprint);
+  border-color: var(--color-cyan);
+}
+
+/* ------------------------------------------------------------
+   OVERLAY INFORMATIVO — Estado vazio / aguardando
+   ------------------------------------------------------------ */
+.map-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  pointer-events: none;
+  z-index: var(--z-overlay);
+}
+
+.map-overlay__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-inverse);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.map-overlay__subtitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-cyan-50);
+}
