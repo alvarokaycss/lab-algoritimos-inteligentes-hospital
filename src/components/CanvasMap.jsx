@@ -31,7 +31,7 @@ export default function CanvasMap({
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Passo 7.1: Estruturar estados locais de Zoom (0.5 a 2.5) e Pan ({ x, y })
+  // Estados de câmera e projeção
   const [internalZoom, setInternalZoom] = useState(DEFAULT_ZOOM);
   const [internalPan, setInternalPan] = useState({ x: 0, y: 0 });
 
@@ -67,7 +67,7 @@ export default function CanvasMap({
     }
   }, [pan, onPanChange]);
 
-  // Passo 7.2: Transformações matemáticas centralizadas no contexto do Canvas 2D
+  // Transformações matemáticas de projeção no contexto Canvas 2D
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !scenario) return;
@@ -102,7 +102,7 @@ export default function CanvasMap({
     const defaultOffsetX = (width - mapPixelWidth * zoom) / 2;
     const defaultOffsetY = (height - mapPixelHeight * zoom) / 2;
 
-    // Passo 7.2: Transformações aplicadas no contexto (ctx.save, translate, scale, ctx.restore)
+    // Aplicação da matriz afim no contexto
     ctx.save();
     ctx.translate(defaultOffsetX + pan.x, defaultOffsetY + pan.y);
     ctx.scale(zoom, zoom);
@@ -139,7 +139,7 @@ export default function CanvasMap({
     return () => resizeObserver.disconnect();
   }, [drawFrame]);
 
-  // Passo 7.3: Evento Wheel para Zoom Contínuo e Centrado no Cursor do Mouse
+  // Escala contínua centrada no cursor via roda do mouse
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -187,7 +187,7 @@ export default function CanvasMap({
     return () => canvas.removeEventListener('wheel', handleWheel);
   }, [zoom, pan, scenario, updateZoom, updatePan]);
 
-  // Passo 7.3: Eventos MouseDown / MouseMove / MouseUp para Pan por Arraste
+  // Eventos de arraste contínuo (Pan)
   const handleMouseDown = (e) => {
     // Permite Pan apenas com o botão primário do mouse (esquerdo)
     if (e.button !== 0) return;
@@ -285,7 +285,6 @@ export default function CanvasMap({
           display: 'block',
           width: '100%',
           height: '100%',
-          // Passo 7.3: Cursor grab em repouso e grabbing durante o arraste
           cursor: isDragging ? 'grabbing' : 'grab',
           touchAction: 'none'
         }}

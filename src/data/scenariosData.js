@@ -5,7 +5,6 @@
  * 3. Hospital Geral (Corredor Congestionado vs. Bypass Perimetral)
  * 
  * Integração direta com GradeHospitalar e TIPOS_CELULA do core.
- * Passo 6.3 / Task 6 e base para Tasks 4, 5 e 10.
  */
 
 import { GradeHospitalar, TIPOS_CELULA } from '../core/grid.js';

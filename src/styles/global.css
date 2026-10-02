@@ -30,7 +30,7 @@ body {
   font-size: var(--text-base);
   font-weight: var(--font-regular);
   color: var(--color-text-primary);
-  background-color: var(--color-clinical-bg); /* #f8fafc — fundo clínico (Passo 2.3) */
+  background-color: var(--color-clinical-bg); /* #f8fafc — fundo clínico */
   line-height: 1.5;
   overflow: hidden; /* A aplicação é full-screen, sem scroll no body */
 }
@@ -184,9 +184,11 @@ hr, .divider {
   border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
-.swatch--wall       { background: repeating-linear-gradient(45deg, #334155 0px, #334155 2px, #475569 2px, #475569 6px); }
-.swatch--free       { background: var(--color-blueprint-60); border: 1px solid var(--color-border-dark); }
-.swatch--congested  { background: var(--color-amber-70); }
-.swatch--isolation  { background: var(--color-danger-70); }
-.swatch--path       { background: var(--color-emerald-70); }
-.swatch--explored   { background: var(--color-cyan-50); }
+.swatch--wall        { background: repeating-linear-gradient(45deg, #334155 0px, #334155 2px, #475569 2px, #475569 6px); }
+.swatch--free        { background: var(--color-blueprint-60); border: 1px solid var(--color-border-dark); }
+.swatch--congested   { background: repeating-linear-gradient(45deg, #f59e0b 0px, #f59e0b 2px, rgba(245, 158, 11, 0.3) 2px, rgba(245, 158, 11, 0.3) 5px); border: 1px solid #f59e0b; }
+.swatch--isolation   { background: repeating-linear-gradient(45deg, #ef4444 0px, #ef4444 2px, rgba(239, 68, 68, 0.3) 2px, rgba(239, 68, 68, 0.3) 5px); border: 1px solid #ef4444; }
+.swatch--path        { background: var(--color-emerald-70); }
+.swatch--path-astar  { background: var(--color-cyan); box-shadow: 0 0 6px rgba(56, 189, 248, 0.6); }
+.swatch--path-greedy { background: repeating-linear-gradient(90deg, #f59e0b 0px, #f59e0b 3px, transparent 3px, transparent 5px); border: 1px solid #f59e0b; }
+.swatch--explored    { background: var(--color-cyan-20); border: 1px dashed var(--color-cyan-50); }
