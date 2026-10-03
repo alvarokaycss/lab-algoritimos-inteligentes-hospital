@@ -7,6 +7,7 @@ import DrawerMetrics from './components/DrawerMetrics.jsx';
 import BottomDocks from './components/BottomDocks.jsx';
 import ScenarioSelector from './components/ScenarioSelector.jsx';
 import { getScenario } from './data/scenariosData.js';
+import { useHospitalSearch } from './hooks/useHospitalSearch.js';
 
 export default function App() {
   // Cenário clínico ativo
@@ -22,20 +23,30 @@ export default function App() {
   // Controle de visibilidade do painel lateral de métricas (push layout)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Parâmetros de execução da busca
+  // Parâmetros de execução da busca (slider na gaveta)
   const [speedMs, setSpeedMs] = useState(20);
-  const [isRunning, setIsRunning] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  // Dados de telemetria e rotas calculadas
-  const [metrics, setMetrics] = useState({});
-  const [routes, setRoutes] = useState({});
-  const [exploredNodes, setExploredNodes] = useState([]);
 
   // Instanciação memoizada do cenário selecionado
   const currentScenario = useMemo(() => {
     return getScenario(selectedScenarioId);
   }, [selectedScenarioId]);
+
+  // Hook de orquestração algorítmica, animação e telemetria
+  const {
+    isRunning,
+    isPaused,
+    exploredNodes,
+    exploredAlgorithm,
+    routes,
+    metrics,
+    play: handlePlay,
+    pause: handlePause,
+    reset: handleReset
+  } = useHospitalSearch({
+    scenario: currentScenario,
+    activeAlgorithm,
+    speedMs
+  });
 
   // Manipuladores de escala de visualização
   const handleZoomIn = () => {
@@ -54,28 +65,7 @@ export default function App() {
   // Alternância de cenário com recalibração de visualização
   const handleSelectScenario = (id) => {
     setSelectedScenarioId(id);
-    setExploredNodes([]);
-    setRoutes({});
-    setMetrics({});
-    setIsRunning(false);
-    setIsPaused(false);
-  };
-
-  // Controle do reprodutor de busca
-  const handlePlay = () => {
-    setIsRunning(true);
-    setIsPaused(false);
-  };
-
-  const handlePause = () => {
-    setIsPaused(true);
-  };
-
-  const handleReset = () => {
-    setIsRunning(false);
-    setIsPaused(false);
-    setExploredNodes([]);
-    setRoutes({});
+    handleReset();
   };
 
   return (
@@ -97,6 +87,7 @@ export default function App() {
             scenario={currentScenario}
             activeAlgorithm={activeAlgorithm}
             exploredNodes={exploredNodes}
+            exploredAlgorithm={exploredAlgorithm}
             routes={routes}
             zoom={zoom}
             pan={pan}
