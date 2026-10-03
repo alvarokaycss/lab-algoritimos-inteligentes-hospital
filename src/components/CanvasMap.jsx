@@ -274,6 +274,7 @@ export default function CanvasMap({
         height: '100%',
         overflow: 'hidden',
         backgroundColor: '#00233d',
+        borderRadius: 'inherit',
         userSelect: 'none'
       }}
     >

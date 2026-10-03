@@ -45,22 +45,22 @@
    --color-border-dark: rgba(56, 189, 248, 0.30);
 
    /* ------------------------------------------------------------------
-     DIMENSÕES ESTRUTURAIS — extraídas do protótipo
+     DIMENSÕES ESTRUTURAIS — Proporções Aumentadas para Alta Legibilidade
      ------------------------------------------------------------------ */
    /* Header / barra superior */
-   --header-height: 42px;
+   --header-height: 48px;
 
    /* Docks inferiores (legenda + player) */
-   --dock-height: 42px;
+   --dock-height: 48px;
 
    /* Botão de configuração flutuante */
-   --config-btn-size: 40px;
+   --config-btn-size: 48px;
 
    /* Dock de zoom (largura) */
-   --zoom-dock-width: 36px;
+   --zoom-dock-width: 48px;
 
    /* Gaveta lateral de métricas */
-   --drawer-width: 320px;
+   --drawer-width: 350px;
 
    /* ------------------------------------------------------------------
      TIPOGRAFIA
@@ -68,16 +68,16 @@
    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 
-   --text-xs: 0.6875rem;
-   /* 11px */
-   --text-sm: 0.75rem;
+   --text-xs: 0.75rem;
    /* 12px */
-   --text-base: 0.875rem;
-   /* 14px */
-   --text-lg: 1rem;
-   /* 16px */
-   --text-xl: 1.125rem;
-   /* 18px */
+   --text-sm: 0.85rem;
+   /* 13.6px */
+   --text-base: 0.95rem;
+   /* 15.2px */
+   --text-lg: 1.05rem;
+   /* 16.8px */
+   --text-xl: 1.25rem;
+   /* 20px */
 
    --font-regular: 400;
    --font-medium: 500;
@@ -115,6 +115,23 @@
    --radius-asym-md: 0 10px 0 10px;
    --radius-asym-sm: 0 6px 0 6px;
    --radius-asym-xs: 0 3px 0 3px;
+
+   /* Ancoragem à Esquerda da Tela (grudada na borda esquerda: cantos esquerdos retos, direitos curvos) */
+   --radius-dock-left-xl: 0 20px 20px 0;
+   --radius-dock-left-lg: 0 14px 14px 0;
+   --radius-dock-left-md: 0 10px 10px 0;
+   --radius-dock-left-sm: 0 6px 6px 0;
+   --radius-dock-left-xs: 0 3px 3px 0;
+
+   /* Ancoragem à Direita da Tela (grudada na borda direita: cantos direitos retos, esquerdos curvos) */
+   --radius-dock-right-xl: 20px 0 0 20px;
+   --radius-dock-right-lg: 14px 0 0 14px;
+   --radius-dock-right-md: 10px 0 0 10px;
+   --radius-dock-right-sm: 6px 0 0 6px;
+   --radius-dock-right-xs: 3px 0 0 3px;
+
+   /* Ancoragem ao Topo da Tela (grudada no topo: cantos superiores retos, inferiores curvos) */
+   --radius-dock-top-lg: 0 0 14px 14px;
 
    /* ------------------------------------------------------------------
      SOMBRAS / ELEVAÇÃO GOOGLE BORDERLESS
