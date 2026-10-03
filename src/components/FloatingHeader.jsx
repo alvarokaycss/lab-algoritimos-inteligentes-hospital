@@ -1,23 +1,11 @@
-import ScenarioSelector from './ScenarioSelector.jsx';
-
 /**
- * Cabeçalho principal da aplicação.
- * Exibe a identidade do sistema de logística intra-hospitalar e abriga o seletor de cenários SUS.
+ * Cabeçalho principal da aplicação em pílula flutuante.
+ * Estilo Verde Esmeralda Clínico (#059669) centralizado sobre a cianotipia.
  */
-export default function FloatingHeader({ selectedScenarioId, onSelectScenario }) {
+export default function FloatingHeader() {
   return (
-    <header className="app-header">
-      <div className="app-header__logo">
-        <span className="app-header__logo-dot" />
-        <span className="app-header__title">Logística Intra-Hospitalar IA</span>
-      </div>
-
-      <div className="app-header__controls">
-        <ScenarioSelector
-          selectedScenarioId={selectedScenarioId}
-          onSelectScenario={onSelectScenario}
-        />
-      </div>
+    <header className="floating-header">
+      <div className="header-title">Logística Intra-Hospitalar</div>
     </header>
   );
 }
