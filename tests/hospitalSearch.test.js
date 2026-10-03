@@ -54,3 +54,17 @@ test('prepareHospitalSearch respeita seleção de algoritmo único', () => {
   assert.ok(!onlyGreedy.finalRoutes.astar);
   assert.ok(onlyGreedy.finalRoutes.greedy);
 });
+
+test('prepareHospitalSearch comprova que A* adota o bypass no Cenário 3 (Hospital Geral)', () => {
+  const scenario = getScenario('hospital_geral');
+  const search = prepareHospitalSearch(scenario, 'both');
+
+  assert.ok(search.finalRoutes.astar.length > 0);
+  assert.ok(search.finalRoutes.greedy.length > 0);
+
+  // O custo do A* deve ser estritamente menor do que o da Gulosa
+  assert.ok(
+    search.metrics.astar.pathCost < search.metrics.greedy.pathCost,
+    `A* (${search.metrics.astar.pathCost}) deve ter custo estritamente menor que Gulosa (${search.metrics.greedy.pathCost})`
+  );
+});
