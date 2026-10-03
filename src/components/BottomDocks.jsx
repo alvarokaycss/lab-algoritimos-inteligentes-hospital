@@ -82,7 +82,7 @@ export default function BottomDocks({
             aria-label="Iniciar execução dos algoritmos"
             title="Executar busca de rotas"
           >
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
             <span>Executar</span>
@@ -95,7 +95,7 @@ export default function BottomDocks({
             aria-label="Pausar execução"
             title="Pausar animação da busca"
           >
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
               <rect x="6" y="4" width="4" height="16" />
               <rect x="14" y="4" width="4" height="16" />
             </svg>

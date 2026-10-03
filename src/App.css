@@ -47,13 +47,13 @@
    * Bottom-Left: R (redonda)
    */
   --radius-asym-xl: 0 20px 0 20px;
-  --radius-asym-lg: 0 14px 0 14px;
-  --radius-asym-md: 0 10px 0 10px;
-  --radius-asym-sm: 0 6px 0 6px;
-  --radius-asym-xs: 0 3px 0 3px;
+  --radius-asym-lg: 0 16px 0 16px;
+  --radius-asym-md: 0 12px 0 12px;
+  --radius-asym-sm: 0 8px 0 8px;
+  --radius-asym-xs: 0 4px 0 4px;
 
   /* Dimensões verticais */
-  --dock-height: 42px;
+  --dock-height: 48px;
 
   /* Elevação Google Suave (Sem bordas de 1px) */
   --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -76,19 +76,19 @@
 }
 
 /* ------------------------------------------------------------
-   BOTÃO FLUTUANTE DE CONFIGURAÇÕES / GAVETA (SUPERIOR ESQUERDO - 40px)
+   BOTÃO FLUTUANTE DE CONFIGURAÇÕES / GAVETA (SUPERIOR ESQUERDO)
    ------------------------------------------------------------ */
 .floating-menu-btn {
   position: absolute;
   top: 1.25rem;
   left: 1.25rem;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   box-sizing: border-box;
   background-color: var(--header-bg);
   color: #ffffff;
   border: none;
-  border-radius: var(--radius-asym-md);
+  border-radius: 12px 0 12px 0;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -106,14 +106,14 @@
 }
 
 .floating-menu-btn svg {
-  width: 17px;
-  height: 17px;
+  width: 24px;
+  height: 24px;
   stroke: currentColor;
   fill: none;
 }
 
 /* ------------------------------------------------------------
-   HEADER FLUTUANTE CENTRALIZADO (TOPO CENTRO - 42px)
+   HEADER FLUTUANTE CENTRALIZADO (TOPO CENTRO)
    ------------------------------------------------------------ */
 .floating-header {
   position: absolute;
@@ -123,9 +123,9 @@
   height: var(--dock-height);
   background-color: var(--header-bg);
   color: #ffffff;
-  padding: 0 1.6rem;
+  padding: 0 2.2rem;
   border: none;
-  border-radius: var(--radius-asym-lg);
+  border-radius: 0 0 16px 16px;
   box-shadow: var(--elevation-emerald);
   display: flex;
   align-items: center;
@@ -135,7 +135,7 @@
 }
 
 .header-title {
-  font-size: 0.88rem;
+  font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: #ffffff;
@@ -159,12 +159,12 @@
 }
 
 .drawer.open {
-  width: 320px;
+  width: 350px;
 }
 
 .drawer-content {
-  width: 320px;
-  padding: 1.5rem;
+  width: 350px;
+  padding: 1.6rem;
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
@@ -174,12 +174,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.85rem;
   border: none;
 }
 
 .drawer-title-label {
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -189,9 +189,9 @@
 .drawer-close-btn {
   background: var(--color-surface-subtle);
   border: none;
-  border-radius: var(--radius-asym-sm);
-  width: 28px;
-  height: 28px;
+  border-radius: 0 8px 0 8px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,25 +207,26 @@
 }
 
 .drawer-close-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   stroke: currentColor;
   fill: none;
 }
 
 .drawer-heading {
-  font-size: 0.74rem;
+  font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-primary);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
   border: none;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
+/* Formulários de configuração: continuam assimétricos (0 R 0 R) */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -233,12 +234,12 @@
   margin-bottom: 0.85rem;
   background: var(--color-surface-subtle);
   padding: 0.75rem 0.9rem;
-  border-radius: var(--radius-asym-md);
+  border-radius: 0 10px 0 10px;
   border: none;
 }
 
 .form-label {
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   font-weight: 500;
   color: var(--color-text);
   display: flex;
@@ -247,7 +248,7 @@
 }
 
 .form-value {
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   font-weight: 600;
   color: var(--color-text-secondary);
   font-variant-numeric: tabular-nums;
@@ -263,10 +264,10 @@
   background: var(--color-surface-active);
 }
 
-/* TABELA DE MÉTRICAS (BORDERLESS COM GEOMETRIA ASSIMÉTRICA) */
+/* TABELA DE MÉTRICAS */
 .table-container {
   border: none;
-  border-radius: var(--radius-asym-md);
+  border-radius: 0 10px 0 10px;
   overflow: hidden;
   background: var(--color-surface-subtle);
   box-shadow: var(--elevation-1);
@@ -275,25 +276,25 @@
 .metrics-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   text-align: left;
 }
 
 .metrics-table th {
   background: #e2e8f0;
-  padding: 8px 12px;
+  padding: 10px 14px;
   font-weight: 700;
   color: var(--color-text-secondary);
   border: none;
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .metrics-table td {
-  padding: 9px 12px;
+  padding: 10px 14px;
   border: none;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -339,7 +340,7 @@
   width: 100%;
   height: 100%;
   background: var(--blueprint-bg);
-  border-radius: var(--radius-asym-xl);
+  border-radius: 20px;
   border: none;
   box-shadow: 0 12px 36px rgba(0, 35, 61, 0.22);
   position: relative;
@@ -354,92 +355,32 @@
 }
 
 /* ------------------------------------------------------------
-   SELETORES DE CENÁRIO (SUPERIOR DIREITO - ASSIMÉTRICO)
-   ------------------------------------------------------------ */
-.scenarios-group {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  z-index: 40;
-}
-
-.scenario-card {
-  background: var(--color-surface);
-  border: none;
-  border-radius: var(--radius-asym-md);
-  padding: 9px 14px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  box-shadow: var(--elevation-2);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  font-family: inherit;
-  text-align: left;
-}
-
-.scenario-card:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--elevation-3);
-  background: #ffffff;
-}
-
-.scenario-card.active {
-  background: var(--color-accent-blue-soft);
-  color: #0369a1;
-  font-weight: 600;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
-}
-
-.scenario-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-asym-xs);
-  background: #94a3b8;
-  border: none;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.scenario-card.active .scenario-indicator {
-  background: var(--color-accent-blue);
-  transform: scale(1.15);
-}
-
-/* ------------------------------------------------------------
    CONTROLES DE ZOOM FLUTUANTES (SUPERIOR ESQUERDO - ASSIMÉTRICO)
    ------------------------------------------------------------ */
 .zoom-dock {
   position: absolute;
-  top: calc(1.25rem + 40px + 10px);
+  top: calc(1.25rem + 48px + 12px);
   left: 1.25rem;
-  width: 40px;
+  width: 48px;
   box-sizing: border-box;
   background: var(--color-surface);
   border: none;
-  border-radius: var(--radius-asym-lg);
+  border-radius: 0 16px 16px 0;
   box-shadow: var(--elevation-2);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px 3px;
-  gap: 3px;
+  padding: 5px 4px;
+  gap: 4px;
   z-index: 30;
 }
 
 .zoom-btn {
   background: transparent;
   border: none;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-asym-sm);
+  width: 40px;
+  height: 40px;
+  border-radius: 0 8px 0 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -456,24 +397,88 @@
 }
 
 .zoom-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   stroke: currentColor;
   fill: none;
 }
 
 .zoom-btn__text {
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .zoom-divider {
-  width: 22px;
+  width: 26px;
   height: 2px;
   background: var(--color-surface-active);
   border: none;
   border-radius: 1px;
+}
+
+/* ------------------------------------------------------------
+   SELETORES DE CENÁRIO (SUPERIOR DIREITO - ASSIMÉTRICO)
+   ------------------------------------------------------------ */
+.scenarios-group {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  z-index: 40;
+}
+
+.scenario-card {
+  background: var(--color-surface);
+  border: none;
+  border-radius: 12px 0 0 12px;
+  padding: 11px 18px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: var(--elevation-2);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  font-family: inherit;
+  text-align: left;
+}
+
+.scenario-card:first-child {
+  border-radius: 0 16px 0 12px;
+}
+
+.scenario-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--elevation-3);
+  background: #ffffff;
+}
+
+.scenario-card.active {
+  background: var(--color-accent-blue-soft);
+  color: #0369a1;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
+}
+
+.scenario-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-asym-xs);
+  background: #94a3b8;
+  border: none;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.scenario-card.active .scenario-indicator {
+  background: var(--color-accent-blue);
+  transform: scale(1.15);
 }
 
 /* ------------------------------------------------------------
@@ -486,8 +491,7 @@
   right: 1.25rem;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap-reverse;
+  align-items: center;
   gap: 0.75rem;
   z-index: 30;
   pointer-events: none;
@@ -499,13 +503,13 @@
   height: var(--dock-height);
   background: var(--color-surface);
   border: none;
-  border-radius: var(--radius-asym-lg);
-  padding: 0 14px;
-  font-size: 0.76rem;
+  border-radius: 0 16px 0 16px;
+  padding: 0 16px;
+  font-size: 0.82rem;
   color: var(--color-text-secondary);
   display: flex;
   align-items: center;
-  gap: 0.95rem;
+  gap: 0.85rem;
   box-shadow: var(--elevation-2);
   white-space: nowrap;
   flex-shrink: 0;
@@ -514,40 +518,40 @@
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   flex-shrink: 0;
 }
 
 .swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: var(--radius-asym-xs);
+  width: 12px;
+  height: 12px;
+  border-radius: 0 4px 0 4px;
   flex-shrink: 0;
   border: none;
 }
 
 .swatch-dashed-box {
-  width: 11px;
-  height: 11px;
+  width: 13px;
+  height: 13px;
   background: #e2e8f0;
   border: 1.5px dashed #475569;
-  border-radius: var(--radius-asym-xs);
+  border-radius: 0 4px 0 4px;
   flex-shrink: 0;
 }
 
 .swatch-line-astar {
-  width: 16px;
-  height: 3px;
+  width: 18px;
+  height: 3.5px;
   background: #38bdf8;
-  border-radius: 1.5px;
+  border-radius: 2px;
   flex-shrink: 0;
   border: none;
 }
 
 .swatch-line-greedy {
-  width: 16px;
+  width: 18px;
   height: 0;
-  border-top: 2.5px dashed #f59e0b;
+  border-top: 3px dashed #f59e0b;
   flex-shrink: 0;
 }
 
@@ -557,7 +561,7 @@
   height: var(--dock-height);
   background: var(--color-surface);
   border: none;
-  border-radius: var(--radius-asym-lg);
+  border-radius: 16px 0 16px 0;
   padding: 0 8px;
   display: flex;
   align-items: center;
@@ -570,9 +574,9 @@
 .segmented-control {
   display: flex;
   background: var(--color-surface-subtle);
-  border-radius: var(--radius-asym-md);
-  padding: 3px;
-  gap: 2px;
+  border-radius: 12px 0 0 0;
+  padding: 4px;
+  gap: 3px;
   flex-shrink: 0;
   border: none;
 }
@@ -580,9 +584,9 @@
 .segment-btn {
   background: transparent;
   border: none;
-  padding: 5px 12px;
-  border-radius: var(--radius-asym-sm);
-  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 0 7px 0 7px;
+  font-size: 0.82rem;
   font-weight: 500;
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -605,7 +609,7 @@
 
 .dock-divider {
   width: 1px;
-  height: 20px;
+  height: 24px;
   background: var(--color-surface-active);
   border: none;
   flex-shrink: 0;
@@ -615,15 +619,15 @@
   background: var(--header-bg);
   color: #ffffff;
   border: none;
-  height: 30px;
-  padding: 0 14px;
-  border-radius: var(--radius-asym-md);
-  font-size: 0.78rem;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 0 10px 0 10px;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.55rem;
   white-space: nowrap;
   flex-shrink: 0;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -647,8 +651,8 @@
 }
 
 .btn-action svg {
-  width: 11px;
-  height: 11px;
+  width: 15px;
+  height: 15px;
   fill: currentColor;
 }
 
@@ -656,9 +660,9 @@
   background: var(--color-surface-subtle);
   border: none;
   color: var(--color-text-secondary);
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-asym-md);
+  width: 34px;
+  height: 34px;
+  border-radius: 0 9px 0 9px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -674,8 +678,8 @@
 }
 
 .btn-secondary svg {
-  width: 13px;
-  height: 13px;
+  width: 18px;
+  height: 18px;
   stroke: currentColor;
   fill: none;
 }
