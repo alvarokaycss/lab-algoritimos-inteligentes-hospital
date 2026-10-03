@@ -603,8 +603,19 @@ export function renderHospitalBlueprint(ctx, scenario, options = {}) {
   }
 
   // 6. Estados visitados na expansão
-  if (exploredNodes && exploredNodes.length > 0) {
-    drawExploredNodes(ctx, exploredNodes, cellSize, exploredAlgorithm);
+  if (exploredNodes) {
+    if (Array.isArray(exploredNodes)) {
+      if (exploredNodes.length > 0) {
+        drawExploredNodes(ctx, exploredNodes, cellSize, exploredAlgorithm);
+      }
+    } else if (typeof exploredNodes === 'object') {
+      if (exploredNodes.greedy && exploredNodes.greedy.length > 0 && (activeAlgorithm === 'both' || activeAlgorithm === 'greedy')) {
+        drawExploredNodes(ctx, exploredNodes.greedy, cellSize, 'greedy');
+      }
+      if (exploredNodes.astar && exploredNodes.astar.length > 0 && (activeAlgorithm === 'both' || activeAlgorithm === 'astar')) {
+        drawExploredNodes(ctx, exploredNodes.astar, cellSize, 'astar');
+      }
+    }
   }
 
   // 7. Trajetórias das rotas
