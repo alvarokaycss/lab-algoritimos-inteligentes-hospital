@@ -1,44 +1,48 @@
 /**
- * Dock flutuante vertical de controles de Zoom da planta baixa.
- * Permite ampliação (+), redução (-) e retorno à escala 1:1.
+ * Dock vertical de controles de Zoom flutuante no canto superior esquerdo (40px).
+ * Posicionado diretamente abaixo do botão de configurações.
+ * Ordem dos botões: [+] aproximar, [-] afastar, [1:1] resetar visualização.
  */
-export default function ZoomDock({ zoom, onZoomIn, onZoomOut, onResetView }) {
-  const formattedZoom = zoom === 1.0 ? '1:1' : `${zoom.toFixed(1)}x`;
-
+export default function ZoomDock({ onZoomIn, onZoomOut, onResetView }) {
   return (
-    <aside className="zoom-dock" aria-label="Controles de Zoom">
+    <aside className="zoom-dock" aria-label="Controles de Zoom da Prancheta">
       <button
         type="button"
-        className="zoom-dock__btn"
+        className="zoom-btn"
         onClick={onZoomIn}
-        aria-label="Aumentar zoom"
-        title="Aumentar zoom (+)"
+        aria-label="Aproximar mapa (+)"
+        title="Aproximar mapa (+)"
       >
-        +
+        <svg viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
       </button>
 
-      <div className="zoom-dock__divider" />
+      <div className="zoom-divider" />
 
       <button
         type="button"
-        className="zoom-dock__label"
-        onClick={onResetView}
-        aria-label="Resetar visualização para escala original 1:1"
-        title="Resetar escala e posição (1:1)"
-      >
-        {formattedZoom}
-      </button>
-
-      <div className="zoom-dock__divider" />
-
-      <button
-        type="button"
-        className="zoom-dock__btn"
+        className="zoom-btn"
         onClick={onZoomOut}
-        aria-label="Diminuir zoom"
-        title="Diminuir zoom (−)"
+        aria-label="Afastar mapa (-)"
+        title="Afastar mapa (-)"
       >
-        −
+        <svg viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      </button>
+
+      <div className="zoom-divider" />
+
+      <button
+        type="button"
+        className="zoom-btn"
+        onClick={onResetView}
+        aria-label="Restaurar zoom original (1:1)"
+        title="Restaurar zoom original (100%)"
+      >
+        <span className="zoom-btn__text">1:1</span>
       </button>
     </aside>
   );

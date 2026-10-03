@@ -1,7 +1,7 @@
 /**
- * Barra inferior composta por dois docks desacoplados:
- * 1. Legenda técnica de convenções gráficas (esquerda)
- * 2. Player de controle de execução e alternância algorítmica (direita)
+ * Barra inferior composta por dois docks desacoplados e flutuantes:
+ * 1. Legenda técnica de convenções gráficas (extrema esquerda)
+ * 2. Player de controle de execução e alternância algorítmica (extrema direita)
  */
 export default function BottomDocks({
   activeAlgorithm = 'both',
@@ -13,111 +13,110 @@ export default function BottomDocks({
   onReset
 }) {
   return (
-    <footer className="bottom-docks">
-      {/* Dock de Legenda Técnica */}
-      <div className="dock-legend" aria-label="Legenda técnica do mapa">
-        <div className="dock-legend__item" title="Célula desimpedida (custo = 1.0)">
-          <span className="swatch swatch--free" />
-          <span className="dock-legend__label">Livre</span>
+    <div className="bottom-bar" aria-label="Painel de Controle e Legenda da Prancheta">
+      {/* LEGENDA NA EXTREMA ESQUERDA INFERIOR */}
+      <aside className="legend-dock" aria-label="Legenda técnica">
+        <div className="legend-item" title="Ponto de partida / doca de triagem">
+          <div className="swatch" style={{ background: '#38bdf8' }} />
+          <span>Início (Doca)</span>
         </div>
 
-        <div className="dock-legend__item" title="Área de tráfego denso de macas (custo = 5.0)">
-          <span className="swatch swatch--congested" />
-          <span className="dock-legend__label">Congestionado</span>
+        <div className="legend-item" title="Destino de urgência / emergência clínica">
+          <div className="swatch" style={{ background: '#10b981' }} />
+          <span>Destino (Emergência)</span>
         </div>
 
-        <div className="dock-legend__item" title="Ala com risco infeccioso ANVISA RDC 50 (intransitável, custo = ∞)">
-          <span className="swatch swatch--isolation" />
-          <span className="dock-legend__label">Isolamento</span>
+        <div className="legend-item" title="Ala de isolamento infeccioso intransitável conforme ANVISA RDC 50">
+          <div className="swatch-dashed-box" />
+          <span>Isolamento (RDC 50)</span>
         </div>
 
-        <div className="dock-legend__item" title="Alvenaria e divisórias físicas estruturais (intransitável)">
-          <span className="swatch swatch--wall" />
-          <span className="dock-legend__label">Parede</span>
+        <div className="legend-item" title="Caminho ótimo com menor custo acumulado (f = g + h)">
+          <div className="swatch-line-astar" />
+          <span>Rota A*</span>
         </div>
 
-        <div className="dock-legend__item" title="Caminho ótimo calculado por f(n) = g(n) + h(n)">
-          <span className="swatch swatch--path-astar" />
-          <span className="dock-legend__label">Rota A*</span>
+        <div className="legend-item" title="Caminho por estimativa pura em linha reta (f = h)">
+          <div className="swatch-line-greedy" />
+          <span>Rota Gulosa</span>
         </div>
+      </aside>
 
-        <div className="dock-legend__item" title="Caminho calculado por f(n) = h(n)">
-          <span className="swatch swatch--path-greedy" />
-          <span className="dock-legend__label">Rota Gulosa</span>
-        </div>
-
-        <div className="dock-legend__item" title="Conjunto de estados avaliados pelo algoritmo">
-          <span className="swatch swatch--explored" />
-          <span className="dock-legend__label">Explorado</span>
-        </div>
-      </div>
-
-      <div className="dock-separator" />
-
-      {/* Dock do Player de Execução */}
-      <div className="dock-player" aria-label="Controles de execução">
-        {/* Alternador de Modo Algorítmico */}
-        <div className="mode-toggle" role="group" aria-label="Algoritmo ativo">
+      {/* CONTROLE DE EXECUÇÃO NA EXTREMA DIREITA INFERIOR */}
+      <section className="player-dock" aria-label="Controle de execução dos algoritmos">
+        <div className="segmented-control" role="group" aria-label="Seleção de Algoritmo">
           <button
             type="button"
-            className={`mode-btn ${activeAlgorithm === 'both' ? 'mode-btn--active' : ''}`}
-            onClick={() => onSelectAlgorithm && onSelectAlgorithm('both')}
-            title="Comparar ambos os algoritmos em paralelo"
-          >
-            Ambos
-          </button>
-          <button
-            type="button"
-            className={`mode-btn ${activeAlgorithm === 'astar' ? 'mode-btn--active' : ''}`}
-            onClick={() => onSelectAlgorithm && onSelectAlgorithm('astar')}
-            title="Executar apenas Algoritmo A* (f = g + h)"
-          >
-            A*
-          </button>
-          <button
-            type="button"
-            className={`mode-btn ${activeAlgorithm === 'greedy' ? 'mode-btn--active' : ''}`}
+            className={`segment-btn ${activeAlgorithm === 'greedy' ? 'active' : ''}`}
             onClick={() => onSelectAlgorithm && onSelectAlgorithm('greedy')}
             title="Executar apenas Busca Gulosa (f = h)"
           >
-            Gulosa
+            Busca Gulosa
+          </button>
+          <button
+            type="button"
+            className={`segment-btn ${activeAlgorithm === 'astar' ? 'active' : ''}`}
+            onClick={() => onSelectAlgorithm && onSelectAlgorithm('astar')}
+            title="Executar apenas Algoritmo A* (f = g + h)"
+          >
+            Algoritmo A*
+          </button>
+          <button
+            type="button"
+            className={`segment-btn ${activeAlgorithm === 'both' ? 'active' : ''}`}
+            onClick={() => onSelectAlgorithm && onSelectAlgorithm('both')}
+            title="Confronto paralelo de ambos os algoritmos"
+          >
+            Confronto Ambos
           </button>
         </div>
 
-        {/* Botão de Ação Primária (Play / Pause) */}
+        <div className="dock-divider" />
+
+        {/* Botão de Ação Primária (Executar / Pausar) */}
         {!isRunning || isPaused ? (
           <button
             type="button"
-            className="dock-player__btn dock-player__btn--primary"
+            className="btn-action"
             onClick={onPlay}
             aria-label="Iniciar execução dos algoritmos"
-            title="Executar busca de rota"
+            title="Executar busca de rotas"
           >
-            ▶ Executar
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+            <span>Executar</span>
           </button>
         ) : (
           <button
             type="button"
-            className="dock-player__btn dock-player__btn--warning"
+            className="btn-action btn-action--pause"
             onClick={onPause}
             aria-label="Pausar execução"
-            title="Pausar animação"
+            title="Pausar animação da busca"
           >
-            ⏸ Pausar
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
+            </svg>
+            <span>Pausar</span>
           </button>
         )}
 
-        {/* Botão de Reset */}
+        {/* Botão de Reset Secundário (28x28px com ícone) */}
         <button
           type="button"
-          className="dock-player__btn"
+          className="btn-secondary"
           onClick={onReset}
-          aria-label="Resetar busca e limpar rotas"
-          title="Limpar rotas e reiniciar estado inicial"
+          aria-label="Limpar rotas e reiniciar estado"
+          title="Limpar rotas"
         >
-          ↺ Reset
+          <svg viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="1 4 1 10 7 10" />
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+          </svg>
         </button>
-      </div>
-    </footer>
+      </section>
+    </div>
   );
 }

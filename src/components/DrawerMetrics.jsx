@@ -1,147 +1,179 @@
 /**
  * Painel lateral retrátil (push layout) de telemetria e análise comparativa.
- * Exibe métricas de desempenho em formato tabular e controle de velocidade da busca.
+ * Fidelidade total com prototipo_interface.html.
  */
 export default function DrawerMetrics({
   isOpen,
   onClose,
   scenario,
   metrics = {},
-  speedMs = 30,
+  speedMs = 20,
   onSpeedChange
 }) {
-  const greedyMetrics = metrics.greedy || {
-    timeMs: null,
-    nodesVisited: null,
-    pathCost: null,
-    pathLength: null
+  const greedy = metrics.greedy || {};
+  const astar = metrics.astar || {};
+
+  const formatVal = (v, unit = '') => {
+    if (v === null || v === undefined) return '—';
+    return `${typeof v === 'number' ? v.toLocaleString('pt-BR') : v}${unit}`;
   };
 
-  const astarMetrics = metrics.astar || {
-    timeMs: null,
-    nodesVisited: null,
-    pathCost: null,
-    pathLength: null
-  };
+  // Comparadores para indicar a melhor métrica
+  const isAstarFaster = astar.timeMs != null && greedy.timeMs != null && astar.timeMs < greedy.timeMs;
+  const isGreedyFaster = astar.timeMs != null && greedy.timeMs != null && greedy.timeMs < astar.timeMs;
 
-  const formatValue = (val, unit = '') => {
-    if (val === null || val === undefined) return '—';
-    return `${typeof val === 'number' ? val.toLocaleString('pt-BR') : val}${unit}`;
-  };
+  const isAstarFewerNodes = astar.nodesVisited != null && greedy.nodesVisited != null && astar.nodesVisited < greedy.nodesVisited;
+  const isGreedyFewerNodes = astar.nodesVisited != null && greedy.nodesVisited != null && greedy.nodesVisited < astar.nodesVisited;
+
+  const isAstarLowerCost = astar.pathCost != null && greedy.pathCost != null && astar.pathCost < greedy.pathCost;
+  const isGreedyLowerCost = astar.pathCost != null && greedy.pathCost != null && greedy.pathCost < astar.pathCost;
+
+  const isAstarFewerSteps = astar.pathLength != null && greedy.pathLength != null && astar.pathLength < greedy.pathLength;
+  const isGreedyFewerSteps = astar.pathLength != null && greedy.pathLength != null && greedy.pathLength < astar.pathLength;
 
   return (
     <aside
-      className={`app-drawer ${isOpen ? 'app-drawer--open' : 'app-drawer--collapsed'}`}
+      className={`drawer ${isOpen ? 'open' : ''}`}
+      id="drawer"
       aria-hidden={!isOpen}
+      aria-label="Painel de telemetria e parâmetros"
     >
-      <div className="drawer-container">
-        {/* Cabeçalho da Gaveta */}
-        <div className="drawer-header">
-          <div className="drawer-header__title">
-            <span className="drawer-header__dot" />
-            <span>Telemetria & Métricas</span>
-          </div>
+      <div className="drawer-content">
+        {/* Cabeçalho do Drawer */}
+        <div className="drawer-header-row">
+          <span className="drawer-title-label">Configurações & Métricas</span>
           <button
             type="button"
-            className="drawer-header__close"
+            className="drawer-close-btn"
+            id="btnCloseDrawer"
             onClick={onClose}
             aria-label="Fechar painel lateral"
-            title="Fechar painel"
+            title="Fechar"
           >
-            ✕
+            <svg viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
 
-        <div className="drawer-content">
-          {/* Card do Cenário Ativo */}
-          {scenario && (
-            <section className="drawer-section">
-              <h4 className="drawer-section__title">Cenário Clínico</h4>
-              <div className="scenario-card">
-                <div className="scenario-card__header">
-                  <strong>{scenario.name}</strong>
-                  <span className="scenario-card__badge">{scenario.badge}</span>
-                </div>
-                <p className="scenario-card__desc">{scenario.description}</p>
-                <div className="scenario-card__meta">
-                  <span>Grid: {scenario.cols} × {scenario.rows} células</span>
-                  <span>Escala: 36px/célula</span>
-                </div>
+        {/* Cenário Clínico Ativo */}
+        {scenario && (
+          <div>
+            <div className="drawer-heading">Cenário Clínico</div>
+            <div className="form-group">
+              <div className="form-label">
+                <span style={{ fontWeight: 600 }}>{scenario.name}</span>
+                <span className="form-value">{scenario.badge}</span>
               </div>
-            </section>
-          )}
-
-          {/* Tabela Comparativa de Métricas (Números Tabulares) */}
-          <section className="drawer-section">
-            <h4 className="drawer-section__title">Comparativo de Desempenho</h4>
-            <div className="metrics-table-wrapper">
-              <table className="metrics-table">
-                <thead>
-                  <tr>
-                    <th>Métrica</th>
-                    <th>Gulosa (f = h)</th>
-                    <th>A* (f = g + h)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Tempo de CPU</td>
-                    <td className="tabular-num">{formatValue(greedyMetrics.timeMs, ' ms')}</td>
-                    <td className="tabular-num">{formatValue(astarMetrics.timeMs, ' ms')}</td>
-                  </tr>
-                  <tr>
-                    <td>Nós Visitados</td>
-                    <td className="tabular-num">{formatValue(greedyMetrics.nodesVisited)}</td>
-                    <td className="tabular-num">{formatValue(astarMetrics.nodesVisited)}</td>
-                  </tr>
-                  <tr>
-                    <td>Custo da Rota (g)</td>
-                    <td className="tabular-num">{formatValue(greedyMetrics.pathCost)}</td>
-                    <td className="tabular-num">{formatValue(astarMetrics.pathCost)}</td>
-                  </tr>
-                  <tr>
-                    <td>Passos da Rota</td>
-                    <td className="tabular-num">{formatValue(greedyMetrics.pathLength)}</td>
-                    <td className="tabular-num">{formatValue(astarMetrics.pathLength)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          {/* Controle de Velocidade da Animação */}
-          <section className="drawer-section">
-            <div className="speed-control__header">
-              <h4 className="drawer-section__title">Velocidade da Execução</h4>
-              <span className="tabular-num speed-badge">{speedMs} ms/passo</span>
-            </div>
-            <div className="speed-slider-wrapper">
-              <input
-                type="range"
-                min="5"
-                max="100"
-                step="5"
-                value={speedMs}
-                onChange={(e) => onSpeedChange && onSpeedChange(Number(e.target.value))}
-                className="speed-slider"
-                aria-label="Velocidade da execução em milissegundos por passo"
-              />
-              <div className="speed-slider-labels">
-                <span>Rápido (5ms)</span>
-                <span>Normal (30ms)</span>
-                <span>Didático (100ms)</span>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', lineHeight: 1.4, margin: '2px 0 0 0' }}>
+                {scenario.description}
+              </p>
+              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+                Dimensões: {scenario.cols} × {scenario.rows} células (36px/célula)
               </div>
             </div>
-          </section>
+          </div>
+        )}
 
-          {/* Normas e Referência Técnica */}
-          <section className="drawer-section drawer-section--footer">
-            <div className="compliance-note">
-              <strong>Conformidade Regulamentar:</strong>
-              <p>Barreiras biológicas modeladas sob protocolo ANVISA RDC 50 (custo infinito). Heurística Euclidiana consistente fundamentada em Liu (2023).</p>
+        {/* Parâmetros da Busca */}
+        <div>
+          <div className="drawer-heading">Parâmetros da Busca</div>
+
+          <div className="form-group">
+            <div className="form-label">
+              <span>Intervalo por passo</span>
+              <span className="form-value" id="valSpeed">{speedMs} ms</span>
             </div>
-          </section>
+            <input
+              type="range"
+              className="range-input"
+              id="inputSpeed"
+              min="5"
+              max="100"
+              value={speedMs}
+              onChange={(e) => onSpeedChange && onSpeedChange(Number(e.target.value))}
+              aria-label="Velocidade da busca em milissegundos"
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="form-label">
+              <span>Função Heurística</span>
+              <span className="form-value">Distância Euclidiana</span>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="form-label">
+              <span>Norma Arquitetônica</span>
+              <span className="form-value">ANVISA RDC 50 / SUS</span>
+            </div>
+          </div>
         </div>
+
+        {/* Métricas Comparativas */}
+        <div>
+          <div className="drawer-heading">Métricas Comparativas</div>
+          <div className="table-container">
+            <table className="metrics-table">
+              <thead>
+                <tr>
+                  <th>Indicador</th>
+                  <th>Gulosa</th>
+                  <th>A*</th>
+                </tr>
+              </thead>
+              <tbody id="metricsBody">
+                <tr>
+                  <td>Tempo de CPU</td>
+                  <td className="col-greedy">
+                    {formatVal(greedy.timeMs, ' ms')}
+                    {isGreedyFaster && <span className="best-indicator" title="Menor tempo" />}
+                  </td>
+                  <td className="col-astar">
+                    {formatVal(astar.timeMs, ' ms')}
+                    {isAstarFaster && <span className="best-indicator" title="Menor tempo" />}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Nós Visitados</td>
+                  <td className="col-greedy">
+                    {formatVal(greedy.nodesVisited)}
+                    {isGreedyFewerNodes && <span className="best-indicator" title="Menor expansão" />}
+                  </td>
+                  <td className="col-astar">
+                    {formatVal(astar.nodesVisited)}
+                    {isAstarFewerNodes && <span className="best-indicator" title="Menor expansão" />}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Custo Total (g)</td>
+                  <td className="col-greedy">
+                    {formatVal(greedy.pathCost)}
+                    {isGreedyLowerCost && <span className="best-indicator" title="Menor custo" />}
+                  </td>
+                  <td className="col-astar">
+                    {formatVal(astar.pathCost)}
+                    {isAstarLowerCost && <span className="best-indicator" title="Rota ótima" />}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Passos da Rota</td>
+                  <td className="col-greedy">
+                    {formatVal(greedy.pathLength)}
+                    {isGreedyFewerSteps && <span className="best-indicator" title="Menos passos" />}
+                  </td>
+                  <td className="col-astar">
+                    {formatVal(astar.pathLength)}
+                    {isAstarFewerSteps && <span className="best-indicator" title="Menor caminho" />}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </aside>
   );
