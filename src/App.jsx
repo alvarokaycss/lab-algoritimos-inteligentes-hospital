@@ -5,6 +5,7 @@ import FloatingHeader from './components/FloatingHeader.jsx';
 import ZoomDock from './components/ZoomDock.jsx';
 import DrawerMetrics from './components/DrawerMetrics.jsx';
 import BottomDocks from './components/BottomDocks.jsx';
+import ScenarioSelector from './components/ScenarioSelector.jsx';
 import { getScenario } from './data/scenariosData.js';
 
 export default function App() {
@@ -22,7 +23,7 @@ export default function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Parâmetros de execução da busca
-  const [speedMs, setSpeedMs] = useState(30);
+  const [speedMs, setSpeedMs] = useState(20);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -78,91 +79,74 @@ export default function App() {
   };
 
   return (
-    <div className="app-layout">
-      {/* Barra de cabeçalho com identificação do sistema e seletor de cenários SUS */}
-      <FloatingHeader
-        selectedScenarioId={selectedScenarioId}
-        onSelectScenario={handleSelectScenario}
+    <div className="app-main">
+      {/* GAVETA LATERAL RETRÁTIL (PUSH LAYOUT) */}
+      <DrawerMetrics
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        scenario={currentScenario}
+        metrics={metrics}
+        speedMs={speedMs}
+        onSpeedChange={setSpeedMs}
       />
 
-      {/* Área de trabalho: gaveta retrátil push layout + viewport do mapa Blueprint */}
-      <div className="app-workspace">
-        {/* Painel lateral retrátil de telemetria comparativa */}
-        <DrawerMetrics
-          isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
-          scenario={currentScenario}
-          metrics={metrics}
-          speedMs={speedMs}
-          onSpeedChange={setSpeedMs}
+      {/* ÁREA DO MAPA 2D (PRANCHETA BLUEPRINT E ELEMENTOS FLUTUANTES) */}
+      <main className="map-container">
+        <div className="blueprint-frame" id="canvasFrame">
+          <CanvasMap
+            scenario={currentScenario}
+            activeAlgorithm={activeAlgorithm}
+            exploredNodes={exploredNodes}
+            routes={routes}
+            zoom={zoom}
+            pan={pan}
+            onZoomChange={setZoom}
+            onPanChange={setPan}
+          />
+        </div>
+
+        {/* BOTÃO FLUTUANTE DE CONFIGURAÇÕES (SUPERIOR ESQUERDO - 40px) */}
+        <button
+          type="button"
+          className="floating-menu-btn"
+          id="btnToggleDrawer"
+          onClick={() => setIsDrawerOpen((prev) => !prev)}
+          aria-label="Abrir configurações e métricas"
+          title="Configurações e Métricas"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+
+        {/* CONTROLES DE ZOOM FLUTUANTES (SUPERIOR ESQUERDO, ABAIXO DA CONFIG - 40px) */}
+        <ZoomDock
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+          onResetView={handleResetView}
         />
 
-        {/* Viewport do mapa Canvas 2D */}
-        <main className="map-container">
-          <div className="blueprint-frame">
-            <CanvasMap
-              scenario={currentScenario}
-              activeAlgorithm={activeAlgorithm}
-              exploredNodes={exploredNodes}
-              routes={routes}
-              zoom={zoom}
-              pan={pan}
-              onZoomChange={setZoom}
-              onPanChange={setPan}
-            />
-          </div>
+        {/* HEADER FLUTUANTE CENTRALIZADO (TOPO CENTRO - 42px) */}
+        <FloatingHeader />
 
-          {/* Botão flutuante de configurações e telemetria (40x40px) */}
-          <button
-            type="button"
-            className="config-btn"
-            onClick={() => setIsDrawerOpen((prev) => !prev)}
-            aria-label="Abrir painel de telemetria e configurações"
-            title="Telemetria & Configurações"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06
-                       a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09
-                       A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83
-                       l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09
-                       A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83
-                       l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09
-                       a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83
-                       l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09
-                       a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-          </button>
+        {/* SELETOR DE CENÁRIOS (SUPERIOR DIREITO) */}
+        <ScenarioSelector
+          selectedScenarioId={selectedScenarioId}
+          onSelectScenario={handleSelectScenario}
+        />
 
-          {/* Dock vertical de Zoom flutuante à direita */}
-          <ZoomDock
-            zoom={zoom}
-            onZoomIn={handleZoomIn}
-            onZoomOut={handleZoomOut}
-            onResetView={handleResetView}
-          />
-        </main>
-      </div>
-
-      {/* Docks inferiores desacoplados: Legenda técnica à esquerda e Player à direita */}
-      <BottomDocks
-        activeAlgorithm={activeAlgorithm}
-        onSelectAlgorithm={setActiveAlgorithm}
-        isRunning={isRunning}
-        isPaused={isPaused}
-        onPlay={handlePlay}
-        onPause={handlePause}
-        onReset={handleReset}
-      />
+        {/* BARRA INFERIOR DE DOCAS FLUTUANTES (LEGENDA E PLAYER DESACOPLADOS) */}
+        <BottomDocks
+          activeAlgorithm={activeAlgorithm}
+          onSelectAlgorithm={setActiveAlgorithm}
+          isRunning={isRunning}
+          isPaused={isPaused}
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onReset={handleReset}
+        />
+      </main>
     </div>
   );
 }
