@@ -1,7 +1,18 @@
 import { FilaPrioridade } from './filaPrioridade.js';
-import  { distanciaEuclidiana } from './heuristicas.js';
+import { distanciaEuclidiana } from './heuristicas.js';
 
-
+/**
+ * Executa a Busca Gulosa Pela Melhor Escolha (Greedy Best-First Search) sobre a Grade Hospitalar.
+ * Função de avaliação: f(n) = h(n)
+ * 
+ * - h(n): Estimativa heurística admissível (distância euclidiana) de n até o destino.
+ * - Desconsidera o custo acumulado g(n), orientando a expansão estritamente pela proximidade visual da meta.
+ * 
+ * @param {import('./grid.js').GradeHospitalar} grade - Grade hospitalar modelada
+ * @param {{ x: number, y: number }} inicio - Ponto de partida (ex: Doca de Ambulâncias)
+ * @param {{ x: number, y: number }} destino - Ponto de chegada (ex: Sala Vermelha / UTI)
+ * @returns {{ caminho: Array<{x: number, y: number}>, nosExplorados: Array<{x: number, y: number}>, metricas: { tempoCpuMs: number, nosVisitados: number, custoTotal: number, passos: number } }}
+ */
 export function executarBuscaGulosa(grade, inicio, destino) {
     const tempoInicio = performance.now();
 
