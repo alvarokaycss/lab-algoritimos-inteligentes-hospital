@@ -82,6 +82,7 @@ function createUbsPorte1Scenario() {
     grid,
     start: { x: 2, y: 7, label: 'Triagem Macas' },
     target: { x: 21, y: 7, label: 'Sala Procedimentos' },
+    reference: 'Manual de Estrutura Física das UBS (Ministério da Saúde / SUS)',
     rooms,
     isolationZones: [],
     congestionZones: []
@@ -186,6 +187,7 @@ function createUpa24hScenario() {
     grid,
     start: { x: 2, y: 8, label: 'Doca Macas' },
     target: { x: 25, y: 8, label: 'Sala Vermelha' },
+    reference: 'Manual Instrutivo UPA 24h (Portaria GM/MS nº 10/2017) / ANVISA RDC 50',
     rooms,
     isolationZones,
     congestionZones: []
@@ -266,6 +268,7 @@ function createHospitalGeralScenario() {
     grid,
     start: { x: 2, y: 8, label: 'Admissão' },
     target: { x: 26, y: 8, label: 'Centro Cirúrgico' },
+    reference: 'ANVISA RDC 50 / Estudo de Caso Liu (2023)',
     rooms,
     isolationZones: [],
     congestionZones

@@ -66,12 +66,12 @@ export default function DrawerMetrics({
                 <span style={{ fontWeight: 600 }}>{scenario.name}</span>
                 <span className="form-value">{scenario.badge}</span>
               </div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', lineHeight: 1.4, margin: '2px 0 0 0' }}>
-                {scenario.description}
-              </p>
-              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>
-                Dimensões: {scenario.cols} × {scenario.rows} células (36px/célula)
-              </div>
+              {scenario.reference && (
+                <div style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', lineHeight: 1.4, marginTop: '4px' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>Referência: </span>
+                  {scenario.reference}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -95,20 +95,6 @@ export default function DrawerMetrics({
               onChange={(e) => onSpeedChange && onSpeedChange(Number(e.target.value))}
               aria-label="Velocidade da busca em milissegundos"
             />
-          </div>
-
-          <div className="form-group">
-            <div className="form-label">
-              <span>Função Heurística</span>
-              <span className="form-value">Distância Euclidiana</span>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <div className="form-label">
-              <span>Norma Arquitetônica</span>
-              <span className="form-value">ANVISA RDC 50 / SUS</span>
-            </div>
           </div>
         </div>
 
